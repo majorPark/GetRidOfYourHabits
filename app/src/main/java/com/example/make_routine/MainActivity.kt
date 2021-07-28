@@ -9,7 +9,7 @@ import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
     private val todayDateTextView: TextView by lazy {findViewById<TextView>(R.id.today_date)}
-    private val routineList: LinearLayout by lazy {findViewById<LinearLayout>(R.id.routineList)}
+    private val mainView: LinearLayout by lazy {findViewById<LinearLayout>(R.id.mainView)}
 
     private var calendarState: Boolean = false
 
@@ -21,13 +21,4 @@ class MainActivity : AppCompatActivity() {
     fun addRoutineButtonClicked(v: View) {}
     fun memoButtonClicked(v: View) {}
     fun calendarButtonClicked(v: View) {}
-    fun mainButtonClicked(v: View) {}
-    fun weekHistoryButtonClicked(v: View) {}
-    fun settingButtonClicked(v: View) {}
-
-    private fun makeRoutineButton (context: String) {
-        val routineButton = Button(this).apply {
-            text = context
-        }
-    }
 }
