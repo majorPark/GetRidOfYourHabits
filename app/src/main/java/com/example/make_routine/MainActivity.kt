@@ -1,25 +1,71 @@
 package com.example.make_routine
 
+import android.app.DatePickerDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.make_routine.bad_habit_list.BadHabitListAdapter
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
     private val todayDateTextView: TextView by lazy {findViewById<TextView>(R.id.today_date)}
     private val mainView: LinearLayout by lazy {findViewById<LinearLayout>(R.id.mainView)}
+    private val calendarBtn: Button by lazy {findViewById(R.id.calendarBtn)}
+
+    private val habitListRecyclerView: RecyclerView by lazy {findViewById(R.id.habitListRecyclerView)}
 
     private var calendarState: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // todayDateTextView 오늘 날짜로 설정하기
+        val selectedDateCalendar =
+            Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
+        var selectedDateString = dateFormat.format(selectedDateCalendar.time)
+        todayDateTextView.text = selectedDateString
+
+        // 달력 변경 리스너
+        val dateSetListener =
+            DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+
+                // 지정한 날짜 변경
+                selectedDateCalendar.set(Calendar.YEAR, year)
+                selectedDateCalendar.set(Calendar.MONTH, month)
+                selectedDateCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+                // 날짜 텍스트뷰 업데이트
+                selectedDateString = dateFormat.format(selectedDateCalendar.time)
+                todayDateTextView.text = selectedDateString
+
+                // 날짜 변경 알림창
+                Toast.makeText(this, "날짜: $selectedDateString", Toast.LENGTH_SHORT).show()
+
+                // 습관 리스트 업데이트
+                // updateHabitListByDate
+            }
+
+        // 달력 다이얼로그
+        val datePicker = DatePickerDialog(
+            this,
+            dateSetListener,
+            selectedDateCalendar.get(Calendar.YEAR),
+            selectedDateCalendar.get(Calendar.MONTH),
+            selectedDateCalendar.get(Calendar.DAY_OF_MONTH)
+        )
+
+        // 달력 아이콘 버튼 클릭 시 달력 다이어로그를 띄움.
+        calendarBtn.setOnClickListener {
+            datePicker.show()
+        }
+
     }
 
     fun addRoutineButtonClicked(v: View) {}
@@ -35,13 +81,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // 습관 리스트 업데이트. room 데이터로 채우기.
+    // 습관 리스트 업데이트.
+    // 지금은 빈 리스트를 넣어두었는데, 나중에 room 데이터로 바꿔야 함.
+    // 날짜를 입력값으로 받고, 해당 데이터를 불러오도록 수정해야 할 듯.
     private fun updateHabitList() {
-        badHabitRv.adapter = BadHabitListAdapter(listOf<String>()) // 지금은 빈 리스트를 넣어두었지만, 나중에 room 데이터로 바꿔야 함.
-        badHabitRv.layoutManager =
+        habitListRecyclerView.adapter = BadHabitListAdapter(listOf<String>())
+        habitListRecyclerView.layoutManager =
             LinearLayoutManager(this)
-        badHabitRv.setHasFixedSize(true)
+        habitListRecyclerView.setHasFixedSize(true)
     }
-
 
 }
