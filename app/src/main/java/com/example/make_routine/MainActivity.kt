@@ -12,9 +12,8 @@ import com.example.make_routine.bad_habit_list.BadHabitListAdapter
 
 
 class MainActivity : AppCompatActivity() {
-    private val todayDateTextView: TextView by lazy { findViewById(R.id.today_date) }
-//    private val routineList: LinearLayout by lazy { findViewById(R.id.routineList) }
-    private val badHabitRv: RecyclerView by lazy { findViewById(R.id.badHabitRv) }
+    private val todayDateTextView: TextView by lazy {findViewById<TextView>(R.id.today_date)}
+    private val mainView: LinearLayout by lazy {findViewById<LinearLayout>(R.id.mainView)}
 
     private var calendarState: Boolean = false
 
