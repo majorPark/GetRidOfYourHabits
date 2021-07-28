@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:padding="10dp"
-        app:layout_constraintBottom_toTopOf="@id/routineView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,17 +27,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/sample_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="sample"
-            android:text="sample text"
-            android:textColor="@color/black"
-            android:textSize="30sp"
-            app:layout_constraintStart_toStartOf="@id/today_date"
-            app:layout_constraintTop_toBottomOf="@id/today_date" />
 
         <ImageButton
             android:id="@+id/addRoutineBtn"
@@ -75,42 +63,42 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ScrollView
-        android:id="@+id/routineView"
-        android:layout_width="0dp"
+    <!--    <ScrollView-->
+    <!--        android:id="@+id/routineView"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:layout_marginRight="10dp"-->
+    <!--        android:layout_marginLeft="10dp"-->
+    <!--        android:layout_marginBottom="10dp"-->
+    <!--        app:layout_constraintBottom_toTopOf="@id/bottomToolbar"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/topToolbar"-->
+    <!--        app:layout_constraintVertical_weight="3">-->
+
+    <!--    </ScrollView>-->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/badHabitRv"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="10dp"
         app:layout_constraintBottom_toTopOf="@id/bottomToolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/topToolbar"
-        app:layout_constraintVertical_weight="3">
-
-        <LinearLayout
-            android:id="@+id/routineList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="10dp" />
-
-    </ScrollView>
+        app:layout_constraintTop_toBottomOf="@id/topToolbar" />
 
     <TableLayout
         android:id="@+id/bottomToolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:padding="10dp"
         android:shrinkColumns="*"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/routineView"
         app:layout_constraintVertical_weight="1">
 
         <TableRow android:layout_weight="1">
