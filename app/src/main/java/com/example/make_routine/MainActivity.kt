@@ -1,29 +1,49 @@
 package com.example.make_routine
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.make_routine.bad_habit_list.BadHabitListAdapter
+import com.example.make_routine.bad_habit_list.BadHabits
+import com.example.make_routine.bad_habit_list.BadHabitsAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-    private val todayDateTextView: TextView by lazy {findViewById<TextView>(R.id.today_date)}
-    private val mainView: LinearLayout by lazy {findViewById<LinearLayout>(R.id.mainView)}
-    private val calendarBtn: Button by lazy {findViewById(R.id.calendarBtn)}
+    private var badHabitsDB: BadHabitsDB? = null
+    private var badHabitsList = listOf<BadHabits>()
+
+    private val todayDateTextView: TextView by lazy { findViewById(R.id.today_date) }
+    private val addRoutineBtn: ImageButton by lazy {findViewById(R.id.addRoutineBtn)}
+    private val calendarBtn: ImageButton by lazy {findViewById(R.id.calendarBtn)}
+
 
     private val habitListRecyclerView: RecyclerView by lazy {findViewById(R.id.habitListRecyclerView)}
-
-    private var calendarState: Boolean = false
+    private var todayDate: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        badHabitsDB = BadHabitsDB.getInstance(this)
+
+        // database thread 시
+        Thread {
+            badHabitsList = badHabitsDB?.badHabitsDao()?.getAll()!!
+
+            var badHabitsAdapter = BadHabitsAdapter(this, badHabitsList)
+            badHabitsAdapter.notifyDataSetChanged()
+            habitListRecyclerView.adapter = badHabitsAdapter
+            habitListRecyclerView.layoutManager = LinearLayoutManager(this)
+            habitListRecyclerView.setHasFixedSize(true)
+        }.start()
 
         // todayDateTextView 오늘 날짜로 설정하기
         val selectedDateCalendar =
@@ -31,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
         var selectedDateString = dateFormat.format(selectedDateCalendar.time)
         todayDateTextView.text = selectedDateString
+        todayDate = selectedDateString.toString()
 
         // 달력 변경 리스너
         val dateSetListener =
@@ -66,29 +87,45 @@ class MainActivity : AppCompatActivity() {
             datePicker.show()
         }
 
-    }
+        addRoutineBtn.setOnClickListener {
+            var badHabitName = showInputDialog()
 
-    fun addRoutineButtonClicked(v: View) {}
-    fun memoButtonClicked(v: View) {}
-    fun calendarButtonClicked(v: View) {}
-    fun mainButtonClicked(v: View) {}
-    fun weekHistoryButtonClicked(v: View) {}
-    fun settingButtonClicked(v: View) {}
-
-    private fun makeRoutineButton(context: String) {
-        val routineButton = Button(this).apply {
-            text = context
+            Thread({
+                badHabitsDB?.badHabitsDao()?.insert(
+                    BadHabits(
+                        badHabitName = badHabitName.toString(),
+                        enrollDate = todayDate.toString()
+                    )
+                )
+            }).start()
         }
     }
+
+    private fun showInputDialog() {
+        val input = EditText(this)
+        val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(this)
+
+        input.hint = "Bad habit's name"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+
+        builder.setTitle("Input your bad habit.")
+            .setView(input)
+            .setPositiveButton("Save", DialogInterface.OnClickListener { _, _ ->
+                var badHabitsName = input.text.toString()
+                badHabitsName})
+            .setNegativeButton("Cancel", DialogInterface.OnClickListener { dialog, _ -> dialog.cancel() })
+            .show()
+    }
+
 
     // 습관 리스트 업데이트.
     // 지금은 빈 리스트를 넣어두었는데, 나중에 room 데이터로 바꿔야 함.
     // 날짜를 입력값으로 받고, 해당 데이터를 불러오도록 수정해야 할 듯.
-    private fun updateHabitList() {
-        habitListRecyclerView.adapter = BadHabitListAdapter(listOf<String>())
+    /*    private fun updateHabitList() {
+        habitListRecyclerView.adapter = BadHabitsAdapter(listOf<String>())
         habitListRecyclerView.layoutManager =
             LinearLayoutManager(this)
         habitListRecyclerView.setHasFixedSize(true)
-    }
+    } */
 
 }

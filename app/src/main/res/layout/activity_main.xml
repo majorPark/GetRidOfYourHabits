@@ -31,7 +31,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="4dp"
-            android:onClick="addRoutineButtonClicked"
             android:src="@drawable/ic_baseline_add_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +41,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="4dp"
-            android:onClick="memoButtonClicked"
             android:src="@drawable/ic_baseline_article_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/addRoutineBtn"
@@ -53,7 +51,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="4dp"
-            android:onClick="calendarButtonClicked"
             android:src="@drawable/ic_baseline_calendar_today_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/memoBtn"
@@ -73,6 +70,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginVertical="10dp" />
+
     </FrameLayout>
 
 
