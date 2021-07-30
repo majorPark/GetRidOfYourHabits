@@ -6,12 +6,12 @@ import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
-import android.view.View
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.make_routine.bad_habit_list.BadHabits
 import com.example.make_routine.bad_habit_list.BadHabitsAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
     private val todayDateTextView: TextView by lazy { findViewById(R.id.today_date) }
     private val addRoutineBtn: ImageButton by lazy {findViewById(R.id.addRoutineBtn)}
     private val calendarBtn: ImageButton by lazy {findViewById(R.id.calendarBtn)}
+    private val addRoutineFab: FloatingActionButton = findViewById(R.id.addRoutineFab)
+
 
 
     private val habitListRecyclerView: RecyclerView by lazy {findViewById(R.id.habitListRecyclerView)}
@@ -34,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
         badHabitsDB = BadHabitsDB.getInstance(this)
 
-        // database thread 시
+        // database thread 시작.
         Thread {
             badHabitsList = badHabitsDB?.badHabitsDao()?.getAll()!!
 
@@ -45,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             habitListRecyclerView.setHasFixedSize(true)
         }.start()
 
-        // todayDateTextView 오늘 날짜로 설정하기
+        // todayDateTextView 오늘 날짜로 설정.
         val selectedDateCalendar =
             Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
@@ -87,20 +89,38 @@ class MainActivity : AppCompatActivity() {
             datePicker.show()
         }
 
+
+        // 루틴 추가 버튼을 눌렀을 때 추가 다이얼로그 띄움.
         addRoutineBtn.setOnClickListener {
             var badHabitName = showInputDialog()
 
-            Thread({
+            Thread {
                 badHabitsDB?.badHabitsDao()?.insert(
                     BadHabits(
                         badHabitName = badHabitName.toString(),
                         enrollDate = todayDate.toString()
                     )
                 )
-            }).start()
+            }.start()
         }
+
+        // 루틴 추가 버튼을 눌렀을 때 추가 다이얼로그 띄움. (Floating Action Button)
+        addRoutineFab.setOnClickListener { view ->
+            var badHabitName = showInputDialog()
+
+            Thread {
+                badHabitsDB?.badHabitsDao()?.insert(
+                    BadHabits(
+                        badHabitName = badHabitName.toString(),
+                        enrollDate = todayDate.toString()
+                    )
+                )
+            }.start()
+        }
+
     }
 
+    // 습관 입력 다이얼로그의 기능을 정의하는 함수.
     private fun showInputDialog() {
         val input = EditText(this)
         val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(this)
