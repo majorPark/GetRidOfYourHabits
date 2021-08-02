@@ -12,8 +12,10 @@ abstract class BadHabitsDB: RoomDatabase() {
     abstract fun badHabitsDao(): BadHabitsDao
 
     companion object {
+        // Room DB 인스턴스 정의.
         private var INSTANCE: BadHabitsDB? = null
 
+        // Room DB에 저장된 값 불러오기.
         fun getInstance(context: Context): BadHabitsDB? {
             if (INSTANCE == null) {
                 synchronized(BadHabitsDB::class) {
@@ -22,10 +24,10 @@ abstract class BadHabitsDB: RoomDatabase() {
                         .build()
                 }
             }
-
             return INSTANCE
         }
 
+        // Room DB 초기화.
         fun destroyInstance() {
             INSTANCE = null
         }
