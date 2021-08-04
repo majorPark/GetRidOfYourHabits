@@ -7,48 +7,57 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.make_routine.bad_habit_list.BadHabits
-import com.example.make_routine.bad_habit_list.BadHabitsAdapter
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.make_routine.dao.BadHabitViewModel
+import com.example.make_routine.dao.BadHabitViewModelFactory
+import com.example.make_routine.model.BadHabit
+import com.example.make_routine.adapter.BadHabitAdapter
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
+    private val badHabitViewModel: BadHabitViewModel by viewModels {
+        (application as BadHabitsApplication).repo?.let { BadHabitViewModelFactory(it) }!!
+    }
 
-    // 클래스 안에서 사용할 변수들을 미리 할당.
-    private var badHabitsDB: BadHabitsDB? = null
-    private var badHabitsList = listOf<BadHabits>()
-    private var todayDate: String? = null
-
-    // 클래스 안에서 사용할 뷰들을 미리 할당.
     private val todayDateTextView: TextView by lazy { findViewById(R.id.today_date) }
     private val addRoutineBtn: ImageButton by lazy { findViewById(R.id.addRoutineBtn) }
     private val calendarBtn: ImageButton by lazy { findViewById(R.id.calendarBtn) }
-    private val addRoutineFab: FloatingActionButton = findViewById(R.id.addRoutineFab)
-    private val habitListRecyclerView: RecyclerView by lazy { findViewById(R.id.habitListRecyclerView) }
+
+
+    private val badHabitListRecyclerView: RecyclerView by lazy { findViewById(R.id.badHabitListRecyclerView) }
+    private val adapter = BadHabitAdapter()
+
+    private var todayDate: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 룸 데이터베이스에 저장된 나쁜 습관 리스트 불러오기.
-        badHabitsDB = BadHabitsDB.getInstance(this)
+        badHabitListRecyclerView.adapter = adapter
+        badHabitListRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        // 불러온 나쁜 습관 리스트를 리사이클러뷰에 띄우기.
+        badHabitViewModel.badHabitNames.observe(this) {badHabitName ->
+            badHabitName.let {adapter.replaceTo(it)}
+        }
+
+        /*
+        // database thread 시
         Thread {
-            badHabitsList = badHabitsDB?.badHabitsDao()?.getAll()!!
+            badHabitList = badHabitDb?.badHabitDao()?.getAll()!!
 
-            val badHabitsAdapter = BadHabitsAdapter(this, badHabitsList)
+            var badHabitsAdapter = BadHabitsAdapter(this, badHabitList)
             badHabitsAdapter.notifyDataSetChanged()
             habitListRecyclerView.adapter = badHabitsAdapter
             habitListRecyclerView.layoutManager = LinearLayoutManager(this)
             habitListRecyclerView.setHasFixedSize(true)
         }.start()
+        */
 
-        // todayDateTextView 오늘 날짜로 설정.
+        // todayDateTextView 오늘 날짜로 설정하기
         val selectedDateCalendar =
             Calendar.getInstance(TimeZone.getTimeZone("Asia/Seoul"), Locale.KOREA)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
@@ -90,36 +99,24 @@ class MainActivity : AppCompatActivity() {
             datePicker.show()
         }
 
-        // 루틴 추가 버튼을 눌렀을 때 추가 다이얼로그 띄움.
         addRoutineBtn.setOnClickListener {
-            var badHabitName = showInputDialog()
+            var badHabitName  = showInputDialog()
 
-            Thread {
-                badHabitsDB?.badHabitsDao()?.insert(
-                    BadHabits(
+            if (badHabitName != Unit) badHabitViewModel.insert(BadHabit(badHabitName.toString()))
+
+            /*
+            Thread({
+                badHabitDb?.badHabitsDao()?.insert(
+                    BadHabit(
                         badHabitName = badHabitName.toString(),
                         enrollDate = todayDate.toString()
                     )
                 )
-            }.start()
-        }
-
-        // 루틴 추가 버튼을 눌렀을 때 추가 다이얼로그 띄움. (Floating Action Button)
-        addRoutineFab.setOnClickListener { view ->
-            var badHabitName = showInputDialog()
-
-            Thread {
-                badHabitsDB?.badHabitsDao()?.insert(
-                    BadHabits(
-                        badHabitName = badHabitName.toString(),
-                        enrollDate = todayDate.toString()
-                    )
-                )
-            }.start()
+            }).start()
+            */
         }
     }
 
-    // 습관 입력 다이얼로그의 기능을 정의하는 함수.
     private fun showInputDialog() {
         val input = EditText(this)
         val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(this)
@@ -131,11 +128,8 @@ class MainActivity : AppCompatActivity() {
             .setView(input)
             .setPositiveButton("Save", DialogInterface.OnClickListener { _, _ ->
                 var badHabitsName = input.text.toString()
-                badHabitsName
-            })
-            .setNegativeButton(
-                "Cancel",
-                DialogInterface.OnClickListener { dialog, _ -> dialog.cancel() })
+                badHabitsName})
+            .setNegativeButton("Cancel", DialogInterface.OnClickListener { _, _ -> })
             .show()
     }
 

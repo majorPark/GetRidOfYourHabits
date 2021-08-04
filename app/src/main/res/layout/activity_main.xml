@@ -66,7 +66,7 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/habitListRecyclerView"
+            android:id="@+id/badHabitListRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginVertical="10dp" />
