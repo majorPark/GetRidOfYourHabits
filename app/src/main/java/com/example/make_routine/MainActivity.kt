@@ -3,6 +3,7 @@ package com.example.make_routine
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
@@ -14,6 +15,7 @@ import com.example.make_routine.dao.BadHabitViewModel
 import com.example.make_routine.dao.BadHabitViewModelFactory
 import com.example.make_routine.model.BadHabit
 import com.example.make_routine.adapter.BadHabitAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -24,7 +26,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val todayDateTextView: TextView by lazy { findViewById(R.id.today_date) }
-    private val addRoutineBtn: ImageButton by lazy { findViewById(R.id.addRoutineBtn) }
+    private val addRoutineFab: FloatingActionButton by lazy { findViewById(R.id.addRoutineFab) }
+    // private val addRoutineBtn: ImageButton by lazy { findViewById(R.id.addRoutineBtn) }
     private val calendarBtn: ImageButton by lazy { findViewById(R.id.calendarBtn) }
 
 
@@ -99,10 +102,9 @@ class MainActivity : AppCompatActivity() {
             datePicker.show()
         }
 
-        addRoutineBtn.setOnClickListener {
-            var badHabitName  = showInputDialog()
-
-            if (badHabitName != Unit) badHabitViewModel.insert(BadHabit(badHabitName.toString()))
+        addRoutineFab.setOnClickListener {
+            val createBadHabitIntent = Intent(this, CreateBadHabitActivity::class.java)
+            startActivity(createBadHabitIntent)
 
             /*
             Thread({
@@ -117,6 +119,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /*
     private fun showInputDialog() {
         val input = EditText(this)
         val builder: AlertDialog.Builder = android.app.AlertDialog.Builder(this)
@@ -132,7 +135,7 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButton("Cancel", DialogInterface.OnClickListener { _, _ -> })
             .show()
     }
-
+    */
 
     // 습관 리스트 업데이트.
     // 지금은 빈 리스트를 넣어두었는데, 나중에 room 데이터로 바꿔야 함.

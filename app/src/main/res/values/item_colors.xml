@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="item_colors">
+        <item>gray</item>
+        <item>pink_200</item>
+        <item>pink_500</item>
+        <item>pink_700</item>
+        <item>green_200</item>
+        <item>green_500</item>
+        <item>green_700</item>
+        <item>blue_200</item>
+        <item>blue_500</item>
+        <item>blue_700</item>
+        <item>teal_200</item>
+        <item>teal_500</item>
+        <item>teal_700</item>
+    </string-array>
+</resources>

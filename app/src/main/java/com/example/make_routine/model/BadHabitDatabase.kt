@@ -3,10 +3,12 @@ package com.example.make_routine.model
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.room.Database
 import androidx.room.Room.databaseBuilder
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.make_routine.R
 import com.example.make_routine.dao.BadHabitDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -48,8 +50,7 @@ abstract class BadHabitDatabase: RoomDatabase() {
 
                     val todayDate: LocalDate = LocalDate.now()
 
-                    // var badHabit = BadHabit("Bad Habit", "$todayDate")
-                    var badHabit = BadHabit("Bad Habit")
+                    var badHabit = BadHabit("Bad Habit", "$todayDate", "#AAAAAA")
                     badHabitDao.insert(badHabit)}
             }
         }
