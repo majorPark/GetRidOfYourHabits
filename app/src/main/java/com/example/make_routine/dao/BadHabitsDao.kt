@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BadHabitDao {
-    @Query("SELECT* FROM bad_habits")
+    @Query("SELECT * FROM bad_habits")
     fun getAll(): Flow<List<BadHabit>>
 
     @Insert
