@@ -37,8 +37,23 @@ class HomeFragment : Fragment() {
     // 원래 있던 부분
     private lateinit var viewModel: HomeViewModel
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    private val badHabitViewModel: BadHabitViewModel by viewModels {
+        (activity?.applicationContext as BadHabitsApplication).repo?.let { BadHabitViewModelFactory(it) }!!
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
         // Use the ViewModel
@@ -96,23 +111,7 @@ class HomeFragment : Fragment() {
         binding.addRoutineFab.setOnClickListener {
             val createBadHabitIntent = Intent(requireContext(), CreateBadHabitActivity::class.java)
             startActivity(createBadHabitIntent)
-
-
         }
-    }
-
-    private val badHabitViewModel: BadHabitViewModel by viewModels {
-        (activity?.applicationContext as BadHabitsApplication).repo?.let { BadHabitViewModelFactory(it) }!!
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
     }
 
     override fun onDestroyView() {
